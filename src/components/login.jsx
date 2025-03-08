@@ -1,8 +1,13 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/UserSlice";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch=useDispatch()
+  const navigate=useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +26,9 @@ const Login = () => {
       });
 
       const data = await response.json();
-
+        console.log("data",data)
+        dispatch(addUser(data.user))
+        navigate("/")
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }
