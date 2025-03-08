@@ -4,9 +4,32 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Email:", email, "Password:", password);
+    
+    let backendUrl = "http://localhost:3000";
+
+    console.log("Backend URL:", backendUrl);
+
+    try {
+      const response = await fetch(`http://localhost:3000/api/auth/login`, {
+        method: "POST",
+        credentials:"include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      console.log("Login Successful:", data);
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
   };
 
   return (
@@ -65,7 +88,7 @@ const Login = () => {
         </div>
         <div className="mt-2 text-center">
           <span className="text-sm">New here? </span>
-          <a href="#" className="text-sm text-blue-500 font-bold hover:underline">
+          <a href="/signup" className="text-sm text-blue-500 font-bold hover:underline">
             Register
           </a>
         </div>
