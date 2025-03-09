@@ -1,30 +1,25 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom'; // ✅ Corrected import
+import './App.css';
+import Signup from './components/Signup';
+import Body from './components/Body';
 
-
-import { BrowserRouter, Route, Routes } from 'react-router'
-import './App.css'
-import Signup from './components/Signup'
-import Navbar from './components/Navbar'
-import Body from './components/Body'
-import Login from './components/login'
+import Profile from './components/Profile';
+import Feed from './components/Feed';
+import Login from './components/login';
 
 function App() {
-
-
   return (
-    <>
-      <BrowserRouter >
+    <BrowserRouter basename='/'>
       <Routes>
-       
-          <Route path="/" element={<Body />} />
-          <Route path="/login" element={<Login />} />
-        
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/navbar" element={<Navbar />} />
-       
+        <Route path="/" element={<Body />}> 
+          <Route index element={<Feed />} /> {/* ✅ Set Feed as the default nested route */}
+          <Route path="profile" element={<Profile />} />
+        </Route>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
-      </BrowserRouter>
-    </>
-  )
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

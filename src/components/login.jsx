@@ -4,8 +4,8 @@ import { addUser } from "../utils/UserSlice";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("Samanvith2004@gmail.com");
+  const [password, setPassword] = useState("123456");
   const dispatch=useDispatch()
   const navigate=useNavigate()
 
@@ -13,9 +13,7 @@ const Login = () => {
     e.preventDefault();
     console.log("Email:", email, "Password:", password);
     
-    let backendUrl = "http://localhost:3000";
-
-    console.log("Backend URL:", backendUrl);
+  
 
     try {
       const response = await fetch(`http://localhost:3000/api/auth/login`, {
