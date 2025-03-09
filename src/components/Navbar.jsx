@@ -1,20 +1,44 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { addUser } from "../utils/UserSlice";
 
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogout = async() => {
+    try {
+      // Send a request to the server to log out
+      fetch(`http://localhost:3000/api/auth/logout`, {
+       
+        credentials: "include",
+      });
+      // console.log("response",response)
+     
+    
+      dispatch(addUser(null));
+      navigate("/login");
+     
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   return (
     <nav className="w-full py-3 px-6 flex justify-between items-center bg-gray-100">
       {/* App Name */}
-      <div className="text-xl font-bold text-gray-800">Devtinder</div>
+      <div className="text-xl font-bold text-gray-800">
+        <Link to="/">Devtinder</Link>
+     
+        </div>
 
       {user ? (
         <div className="flex items-center gap-4">
           <span className="text-xl font-bold text-gray-800">Welcome {user.name}</span>
+
           {/* User Profile */}
           <div className="relative">
             <img
@@ -28,11 +52,22 @@ const Navbar = () => {
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-40 bg-white shadow-md rounded-md">
                 <ul className="py-2">
-                  <li className="px-4 py-2 cursor-pointer hover:bg-gray-200">Profile</li>
+                  <li className="px-4 py-2 cursor-pointer hover:bg-gray-200"
+                    onClick={() => {
+                      navigate("/profile");
+                      setDropdownOpen(false); // Close dropdown
+                    }}
+                  >
+                    Profile
+                  </li>
                   <li className="px-4 py-2 cursor-pointer hover:bg-gray-200">Settings</li>
                   <li
                     className="px-4 py-2 cursor-pointer hover:bg-gray-200"
-                    onClick={() => console.log("Logout function here")}
+                    onClick={() => {
+                      handleLogout();
+                      setDropdownOpen(false); // Close dropdown
+                    }}
+                    
                   >
                     Logout
                   </li>
