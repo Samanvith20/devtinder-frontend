@@ -1,7 +1,29 @@
 import React from "react";
 
 const FeedCard = ({ item }) => {
-  const { name, profilePicture, age, gender, skills, about } = item;
+  const { name, profilePicture, age, gender, about,skills,_id} = item;
+
+  const handleSendRequest = async (status, id) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/request/send/${status}/${id}`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          
+        }
+      );
+      const data = await response.json();
+      console.log("Data", data);
+      if (!response.ok) {
+        throw new Error(data.message || "Error occurred while sending request");
+      }
+      
+    } catch (error) {
+      console.log("Error", error);
+    }
+  }
   return (
     <div className="border-2 w-full  flex flex-col  border-gray-200  p-4 m-4 max-w-md mx-auto">
       <h1 className="text-center">{name}</h1>
@@ -26,26 +48,27 @@ const FeedCard = ({ item }) => {
       }
       {age && <h3 className="text-sm "> Age: {age}</h3>}
       {gender && <h3> Gender: {gender}</h3>}
-      {skills && (
-        <div>
-          {skills.map((skill) => {
-            return <span key={skill}>{skill}</span>;
-          })}
-        </div>
-      )}
+     
       {about && <h3>{about}</h3>}
-      {/* <div className="flex justify-center items-center space-x-4">
+      {
+        skills && <h3>Skills: {skills}</h3>
+      }
+      <div className="flex justify-center items-center space-x-4">
         <div>
-          <button className="px-4 py-2 text-center bg-green-500 text-white rounded-md">
+          <button 
+            onClick={() => handleSendRequest("interested", _id)}
+          className="px-4 py-2 text-center bg-green-500 text-white rounded-md">
             Accept
           </button>
         </div>
         <div>
-          <button className="px-4 py-2 bg-red-500 text-white rounded-md">
+          <button 
+            onClick={() => handleSendRequest("ignored", _id)}
+          className="px-4 py-2 bg-red-500 text-white rounded-md">
             Reject
           </button>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };
