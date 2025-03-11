@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import FeedCard from "./FeedCard";
 import { addUser } from "../utils/UserSlice";
 
 const EditProfile = ({ user }) => {
-  console.log("User", user);
+  // console.log("User", user);
   const [firstName, setFirstName] = useState(user.name);
   //   const [lastName, setLastName] = useState(user.lastName);
   const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
@@ -14,6 +14,14 @@ const EditProfile = ({ user }) => {
   const[skills,setSkills]=useState(user.skills || [])
 
   const dispatch = useDispatch();
+  useEffect(() => {
+    setFirstName(user.name || "");
+    setPhotoUrl(user.photoUrl || "");
+    setAge(user.age || "");
+    setGender(user.gender || "");
+    setAbout(user.about || "");
+    setSkills((user.skills) ? user.skills : []);
+  }, [user]);
 
   const saveProfile = async () => {
     try {
@@ -25,7 +33,7 @@ const EditProfile = ({ user }) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             firstName,
-           
+           skills,
             photoUrl,
             age,
             gender,
