@@ -25,52 +25,47 @@ const FeedCard = ({ item }) => {
     }
   }
   return (
-    <div className="border-2 w-full  flex flex-col  border-gray-200  p-4 m-4 max-w-md mx-auto">
-      <h1 className="text-center">{name}</h1>
-      {
-        profilePicture ?
-        (
-          <img
-          src={profilePicture}
+    <div
+      className="flex flex-row items-center border-2 border-gray-200 rounded-lg p-4 m-4 max-w-2xl mx-auto shadow-lg bg-white"
+    >
+      {/* Left Side: Profile Image */}
+      <div className="w-32 h-32 flex-shrink-0">
+        <img
+          src={profilePicture || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgJCptPOx71EJH7cxh-m3JebMLah27zZgA7Ewl7hE6a0QpxLMhBsbrHx8&s"}
           alt="profile"
-          width="100"
-          height="100"
+          className="w-full h-full object-cover rounded-full border-2 border-gray-300"
         />
-        ) :(
-          <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgJCptPOx71EJH7cxh-m3JebMLah27zZgA7Ewl7hE6a0QpxLMhBsbrHx8&s"
-          alt="profile"
-          width="100"
-          height="100"
-          className="rounded-full w-40 h-30"
-        />
-        )
-      }
-      {age && <h3 className="text-sm "> Age: {age}</h3>}
-      {gender && <h3> Gender: {gender}</h3>}
-     
-      {about && <h3>{about}</h3>}
-      {
-        skills && <h3>Skills: {skills}</h3>
-      }
-      <div className="flex justify-center items-center space-x-4">
+      </div>
+  
+      {/* Right Side: User Details & Actions */}
+      <div className="ml-6 text-left flex flex-col justify-between w-full">
         <div>
-          <button 
+          <h1 className="text-xl font-bold text-gray-800">{name}</h1>
+          {age && <p className="text-sm text-gray-600">Age: {age}</p>}
+          {gender && <p className="text-sm text-gray-600">Gender: {gender}</p>}
+          {about && <p className="text-sm text-gray-600">About: {about}</p>}
+          {skills && <p className="text-sm text-gray-600">Skills: {skills}</p>}
+        </div>
+  
+        {/* Action Buttons */}
+        <div className="flex space-x-4 mt-4">
+          <button
             onClick={() => handleSendRequest("interested", _id)}
-          className="px-4 py-2 text-center bg-green-500 text-white rounded-md">
+            className="px-4 py-2 bg-green-500 text-white rounded-md"
+          >
             Accept
           </button>
-        </div>
-        <div>
-          <button 
+          <button
             onClick={() => handleSendRequest("ignored", _id)}
-          className="px-4 py-2 bg-red-500 text-white rounded-md">
+            className="px-4 py-2 bg-red-500 text-white rounded-md"
+          >
             Reject
           </button>
         </div>
       </div>
     </div>
   );
+  
 };
 
 export default FeedCard;

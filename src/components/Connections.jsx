@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 
 const Connections = () => {
-const [connections, setConnections] = useState([])
+  const [connections, setConnections] = useState([]);
+
   const getConnections = async () => {
     try {
       const response = await fetch(`http://localhost:3000/api/profile/view/connections`, {
@@ -10,24 +11,54 @@ const [connections, setConnections] = useState([])
         headers: { "Content-Type": "application/json" },
       });
       const data = await response.json();
-      console.log("Connections Data", data)
+      console.log("Connections Data", data);
+      setConnections(data.data);
       if (!response.ok) {
-        throw new Error(data.message || "Error  occured while fetching connections")
+        throw new Error(data.message || "Error occurred while fetching connections");
       }
     } catch (error) {
-      console.log("Error",error)
-      
+      console.log("Error", error);
     }
-  }
+  };
 
   useEffect(() => {
-    getConnections()
-  }, [])
-  return (
-    <div>
-      connections 
-    </div>
-  )
-}
+    getConnections();
+  }, []);
 
-export default Connections
+  if (connections.length === 0) {
+    return <div className="text-center text-gray-500 text-xl my-10">No Connections</div>;
+  }
+
+  return (
+    <div className="text-center my-10">
+      <h1 className="font-bold text-white text-3xl mb-6">Connections</h1>
+
+      {connections.map((item) => (
+        <div
+          key={item._id}
+          className="flex flex-row items-center border-2 border-gray-200 rounded-lg p-4 m-4 max-w-2xl mx-auto shadow-lg bg-white"
+        >
+          {/* Left Side: Profile Image */}
+          <div className="w-32 h-32 flex-shrink-0">
+            <img
+              src={item.profilePicture || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgJCptPOx71EJH7cxh-m3JebMLah27zZgA7Ewl7hE6a0QpxLMhBsbrHx8&s"}
+              alt="profile"
+              className="w-full h-full object-cover rounded-full border-2 border-gray-300"
+            />
+          </div>
+
+          {/* Right Side: User Details */}
+          <div className="ml-6 text-left">
+            <h1 className="text-xl font-bold text-gray-800">{item.name}</h1>
+            {item.age && <p className="text-sm text-gray-600">Age: {item.age}</p>}
+            {item.email && <p className="text-sm text-gray-600">Email: {item.email}</p>}
+            {item.about && <p className="text-sm text-gray-600">About: {item.about}</p>}
+            {item.skills && <p className="text-sm text-gray-600">Skills: {item.skills}</p>}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default Connections;
