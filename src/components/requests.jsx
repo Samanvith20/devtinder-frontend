@@ -1,8 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { removeUserFromFeed } from '../utils/feedSlice';
+import { addrequests } from '../utils/requestSlice';
 
 const Requests = () => {
-    const[requests,setRequests] = useState([])
+    
+       const dispatch=useDispatch()
+    const requests= useSelector((state)=>state.request)
+    console.log("Requests",requests)
+    
   const getRequests = async () => {
+    
     try {
         const response= await fetch(`http://localhost:3000/api/profile/user/requests`,{
             method:"GET",
@@ -11,7 +19,8 @@ const Requests = () => {
         })
         const data = await response.json()
         console.log("Requests Data",data)
-        setRequests(data.data)
+        
+        dispatch(addrequests(data.data))
         if(!response.ok){
             throw new Error(data.message || "Error occured while fetching requests")
         }
@@ -19,6 +28,7 @@ const Requests = () => {
         console.log("Error",error)
     }
   }
+
   const reviewRequest = async (status, id) => {
     try {
       const response = await fetch(
@@ -32,6 +42,7 @@ const Requests = () => {
       );
       const data = await response.json();
       console.log("Data", data);
+      dispatch(removeUserFromFeed(id))
       if (!response.ok) {
         throw new Error(data.message || "Error occurred while sending request");
       }
@@ -44,14 +55,16 @@ const Requests = () => {
     getRequests()
   }
 , [])
-if(requests.length === 0){
-    return <div className='text-center text-gray-500 text-xl my-10'>No Requests</div>
-}
+
+if (!requests) return;
+
+  if (requests.length === 0)
+    return <h1 className="flex justify-center my-10"> No Requests Found</h1>;
 return (
     <div className="text-center my-10">
       <h1 className="font-bold text-white text-3xl mb-6">Connection Requests</h1>
   
-      {requests.map((request) => {
+      { requests.length >0 && requests.map((request) => {
         const { _id, email,name, photoUrl, age, gender, about } = request.senderId;
   
         return (
@@ -62,7 +75,8 @@ return (
             {/* Left Side: Profile Image */}
             <div className="w-32 h-32 flex-shrink-0">
               <img
-                src={photoUrl || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgJCptPOx71EJH7cxh-m3JebMLah27zZgA7Ewl7hE6a0QpxLMhBsbrHx8&s"}
+                src={photoUrl || 
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgJCptPOx71EJH7cxh-m3JebMLah27zZgA7Ewl7hE6a0QpxLMhBsbrHx8&s"}
                 alt="profile"
                 className="w-full h-full object-cover rounded-full border-2 border-gray-300"
               />

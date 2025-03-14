@@ -2,19 +2,18 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/UserSlice";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const Login = () => {
-  const [email, setEmail] = useState("Samanvith2004@gmail.com");
-  const [password, setPassword] = useState("123456");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const dispatch=useDispatch()
   const navigate=useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Email:", email, "Password:", password);
-    
-  
-
+    const toastLoading=toast.loading("Logging in...")
     try {
       const response = await fetch(`http://localhost:3000/api/auth/login`, {
         method: "POST",
@@ -25,23 +24,31 @@ const Login = () => {
 
       const data = await response.json();
         console.log("data",data)
+        toast.success("Login Successful",{id:toastLoading})
         dispatch(addUser(data.user))
         navigate("/")
+        
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }
+      
 
       console.log("Login Successful:", data);
     } catch (error) {
+      if(error.message.includes("Unauthorized") || error.message.includes("Login failed")){
+        toast.error(error.message || "Login Failed",{id:toastLoading})
+        navigate("/login")
+      }
+     
       console.error("Error:", error.message);
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen m-auto  bg-gray-100">
       <div className="w-full max-w-sm p-6 bg-white rounded-lg shadow-lg font-mono">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Login</h2>
-
+        <Toaster/>
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email Input */}

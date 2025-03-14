@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import FeedCard from "./FeedCard";
 import { addUser } from "../utils/UserSlice";
+import toast, { Toaster } from "react-hot-toast";
 
 const EditProfile = ({ user }) => {
   // console.log("User", user);
@@ -24,6 +25,7 @@ const EditProfile = ({ user }) => {
   }, [user]);
 
   const saveProfile = async () => {
+    const toastId=toast.loading("Saving Profile...")
     try {
       const response = await fetch(
         `http://localhost:3000/api/profile/view/edit-profile`,
@@ -47,14 +49,17 @@ const EditProfile = ({ user }) => {
         throw new Error(data.message || "Error occurred while saving profile");
       }
       dispatch(addUser(data.data));
+      toast.success("Profile Saved Successfully",{id:toastId})
     } catch (error) {
       console.log("Error", error);
+      toast.error("Error occurred while saving profile",{id:toastId})
     }
   };
 
   return (
     <div className="flex flex-col md:flex-row  justify-center items-start gap-10 my-10 px-6">
       {/* Edit Profile Form */}
+      <Toaster />
       <div className="bg-gray-100 p-6 rounded-lg shadow-md w-full md:w-1/2">
         <h2 className="text-2xl font-bold text-center mb-4">Edit Profile</h2>
         <div className="space-y-4">
@@ -125,7 +130,7 @@ const EditProfile = ({ user }) => {
 
       {/* Live Preview */}
       <div className=" w-1/2 bg-[re flex justify-center">
-        <FeedCard item={{ firstName, photoUrl, age, gender, about,skills }} />
+        <FeedCard user={{ firstName, photoUrl, age, gender, about,skills }} />
       </div>
     </div>
   );
