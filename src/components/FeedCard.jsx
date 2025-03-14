@@ -1,7 +1,22 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { removeUserFromFeed } from "../utils/feedSlice";
 
-const FeedCard = ({ item }) => {
-  const { name, profilePicture, age, gender, about,skills,_id} = item;
+
+
+
+const FeedCard = ( props) => {
+
+  
+
+  const url=window.location.href
+  console.log("URL",url)
+  
+  
+  console.log("props", props);
+  const { name, photoUrl, age, gender, about,skills,_id} = props.user;
+       console.log("User",props.user)
+   const dispatch=useDispatch() 
 
   const handleSendRequest = async (status, id) => {
     try {
@@ -16,6 +31,8 @@ const FeedCard = ({ item }) => {
       );
       const data = await response.json();
       console.log("Data", data);
+      dispatch(removeUserFromFeed(id))
+
       if (!response.ok) {
         throw new Error(data.message || "Error occurred while sending request");
       }
@@ -31,7 +48,7 @@ const FeedCard = ({ item }) => {
       {/* Left Side: Profile Image */}
       <div className="w-32 h-32 flex-shrink-0">
         <img
-          src={profilePicture || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgJCptPOx71EJH7cxh-m3JebMLah27zZgA7Ewl7hE6a0QpxLMhBsbrHx8&s"}
+          src={photoUrl || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgJCptPOx71EJH7cxh-m3JebMLah27zZgA7Ewl7hE6a0QpxLMhBsbrHx8&s"}
           alt="profile"
           className="w-full h-full object-cover rounded-full border-2 border-gray-300"
         />
@@ -48,20 +65,26 @@ const FeedCard = ({ item }) => {
         </div>
   
         {/* Action Buttons */}
+         {
+          !url.includes("/profile") &&(
+         
         <div className="flex space-x-4 mt-4">
           <button
             onClick={() => handleSendRequest("interested", _id)}
             className="px-4 py-2 bg-green-500 text-white rounded-md"
           >
-            Accept
+                        Interested
+
           </button>
           <button
             onClick={() => handleSendRequest("ignored", _id)}
             className="px-4 py-2 bg-red-500 text-white rounded-md"
           >
-            Reject
+               Ignore
           </button>
         </div>
+          )
+        }
       </div>
     </div>
   );

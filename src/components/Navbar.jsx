@@ -42,7 +42,9 @@ const Navbar = () => {
           {/* User Profile */}
           <div className="relative">
             <img
-              src={user.profilePic}
+              src={user.photoUrl  || 
+                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgJCptPOx71EJH7cxh-m3JebMLah27zZgA7Ewl7hE6a0QpxLMhBsbrHx8&s"
+              }
               alt="User"
               className="w-10 h-10 rounded-full cursor-pointer"
               onClick={() => setDropdownOpen(!dropdownOpen)}

@@ -1,9 +1,8 @@
-import { Outlet } from "react-router-dom"; // ✅ Corrected import
+import { Outlet, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./footer";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { addUser } from "../utils/UserSlice";
 
 const Body = () => {
@@ -12,8 +11,17 @@ const Body = () => {
   const dispatch = useDispatch();
 
   const authMiddleware = async () => {
-    if (user) return;
     try {
+      // ✅ Check if a token exists in cookies
+      const token = document.cookie.split("; ").find(row => row.startsWith("token="));
+      
+      if (!token) {
+        console.warn("No token found, redirecting to login/signup");
+        navigate("/login"); // ✅ Redirect to Login if no token
+        return;
+      }
+
+      // ✅ Fetch user details from backend
       const response = await fetch("http://localhost:3000/api/profile/view/profile", {
         method: "GET",
         credentials: "include",
@@ -23,23 +31,26 @@ const Body = () => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Authentication failed");
 
-      dispatch(addUser(data.user));
-    } catch (error) {
-      if (error.message === "Authentication failed") {
-        navigate("/login");
+      // ✅ Store user in Redux if valid
+      if (data.user) {
+        dispatch(addUser(data.user));
+      } else {
+        throw new Error("Invalid user data");
       }
-      console.error("Error:", error.message);
+    } catch (error) {
+      console.error("Auth Error:", error);
+      navigate("/login"); // ✅ Redirect on auth failure
     }
   };
 
   useEffect(() => {
-    if (!user) authMiddleware();
-  }, [user]); // ✅ Added user as a dependency
+    if (!user || !user._id) authMiddleware();
+  }, [user]); // ✅ Runs when user is missing
 
   return (
     <div>
       <Navbar />
-      <Outlet /> {/* ✅ This allows nested routes to render inside Body */}
+      <Outlet />
       <Footer />
     </div>
   );
