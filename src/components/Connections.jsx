@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 
 const Spinner = () => {
@@ -78,6 +79,21 @@ const Connections = () => {
             {item.email && <p className="text-sm text-gray-600">Email: {item.email}</p>}
             {item.about && <p className="text-sm text-gray-600">About: {item.about}</p>}
             {item.skills && <p className="text-sm text-gray-600">Skills: {item.skills}</p>}
+
+             {/* Chat Button */}
+             <Link to={"/chat/" + item._id}>
+             <button
+             
+              
+
+               
+               
+              
+              className="mt-3 px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition-all"
+            >
+              Chat
+            </button>
+            </Link>
           </div>
         </div>
       ))}

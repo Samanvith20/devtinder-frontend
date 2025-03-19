@@ -2,16 +2,29 @@ import React, { useEffect, } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { removeUserFromFeed } from '../utils/feedSlice';
 import { addrequests } from '../utils/requestSlice';
+import toast, { Toaster } from 'react-hot-toast';
+
+
+const Spinner = () => {
+  return (
+    <div className="flex justify-center items-center my-24">
+      <div className="w-30 h-30 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+    </div>
+  );
+};
 
 const Requests = () => {
+  const [loading, setLoading] = React.useState(false);
     
        const dispatch=useDispatch()
     const requests= useSelector((state)=>state.request)
     console.log("Requests",requests)
     
   const getRequests = async () => {
+
     
     try {
+      setLoading(true)
         const response= await fetch(`http://localhost:3000/api/profile/user/requests`,{
             method:"GET",
             credentials:"include",
@@ -27,9 +40,14 @@ const Requests = () => {
     } catch (error) {
         console.log("Error",error)
     }
+    finally{
+      setLoading(false)
+    }
   }
 
   const reviewRequest = async (status, id) => {
+
+    const toastLoading = toast.loading("Sending request...");
     try {
       const response = await fetch(
         `http://localhost:3000/api/request/review/${status}/${id}`,
@@ -42,13 +60,24 @@ const Requests = () => {
       );
       const data = await response.json();
       console.log("Data", data);
+      if(response.ok){
       dispatch(removeUserFromFeed(id))
-      if (!response.ok) {
-        throw new Error(data.message || "Error occurred while sending request");
-      }
+      toast.success(data.message || "Request reviewed successfully",{
+        id:toastLoading
+      });
+    }else{
+      toast.error(data.message || "Error occured while reviewing request",{
+        id:toastLoading
+      });
+
+    }
+     
       
     } catch (error) {
       console.log("Error", error);
+      toast.error("Error occured while reviewing request",{
+        id:toastLoading
+      });
     }
   }
   useEffect(() => {
@@ -57,13 +86,16 @@ const Requests = () => {
 , [])
 
 if (!requests) return;
+if(loading) return   <Spinner />
+
+
 
   if (requests.length === 0)
     return <h1 className="flex justify-center my-10"> No Requests Found</h1>;
 return (
     <div className="text-center my-10">
       <h1 className="font-bold text-white text-3xl mb-6">Connection Requests</h1>
-  
+       <Toaster/>
       { requests.length >0 && requests.map((request) => {
         const { _id, email,name, photoUrl, age, gender, about } = request.senderId;
   
