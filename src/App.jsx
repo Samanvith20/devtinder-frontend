@@ -9,6 +9,7 @@ import Connections from "./components/Connections";
 import Requests from "./components/requests";
 import Login from "./components/login";
 import Chat from "./components/Chat";
+import Subscription from "./components/Subscription";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/connections" element={<Connections />} />
           <Route path="/requests" element={<Requests />} />
           <Route path="/chat/:id" element={<Chat />} />
+          <Route path="/subscription" element={<Subscription />} />
         </Route>
       </Routes>
     </BrowserRouter>

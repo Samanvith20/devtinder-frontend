@@ -78,6 +78,14 @@ const Navbar = () => {
                   className="px-4 py-2 cursor-pointer hover:bg-gray-200">
                     Request
                     </li>
+                    <li className="px-4 py-2 cursor-pointer hover:bg-gray-200"
+                    onClick={() => {
+                      navigate("/subscription");
+                      setDropdownOpen(false); // Close dropdown
+                    }}
+                  >
+                    Subscription
+                  </li>
                   <li
                     className="px-4 py-2 cursor-pointer hover:bg-gray-200"
                     onClick={() => {
