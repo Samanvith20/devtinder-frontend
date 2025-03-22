@@ -17,7 +17,7 @@ const Feed = () => {
  
  const[loading ,setLoading]=useState(true)
   const dispatch=useDispatch()
-  const feed=useSelector((state)=>state.feed.feedpage)
+  const feed=useSelector((state)=>state?.feed?.feedpage)
   console.log("Feed",feed)
 
    const getFeed=async()=>{

@@ -1,6 +1,47 @@
 import React from 'react';
 
 const Subscription = () => {
+
+    const createorder=async(plan)=>{
+        try {
+            const response = await fetch(`http://localhost:3000/api/payment/create-order`, {
+              method: "POST",
+              credentials:"include",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ membershipType: plan }),
+            });
+            const data = await response.json();
+            console.log("Order Data",data)
+            if(!response.ok){
+              throw new Error(data.message || "Error  occured while creating order")
+            }
+            const{ amount, notes, currency,  orderId}=data.data
+            const options = {
+                key: data.keyId,
+                amount: amount,
+                currency: currency,
+                name: "Devtinder",
+                description: "Subscription",
+                image: "https://cdn-icons-png.flaticon.com/512/4333/4333609.png",
+                order_id: orderId,
+                prefill: {
+                    name: notes.firstName + " " + notes.lastName,
+                    email: notes.emailId,
+                    contact: "9999999999",
+                  },
+                theme: {
+                    color: "#F37254",
+                  },
+                
+            }
+            const rzp = new window.Razorpay(options);
+    rzp.open();
+          } catch (error) {
+            console.log("Error",error)
+            
+          }
+        
+    }
     return (
         <div className="bg-gray-100 py-24 ">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -15,7 +56,11 @@ const Subscription = () => {
                             <li>Chat with a limit of 20 people per day</li>
                         </ul>
                         <p className="text-gray-700 mb-4">Pricing: $500 per month</p>
-                        <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Pay Now</button>
+                        <button 
+                        onClick={()=>{
+                            createorder("gold")
+                        }}
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Pay Now</button>
                     </div>
 
                     <div className="bg-white rounded-lg shadow-lg p-6">
@@ -27,7 +72,11 @@ const Subscription = () => {
                             <li>Video-call feature is also available</li>
                         </ul>
                         <p className="text-gray-700 mb-4">Pricing: $700 per month</p>
-                        <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Pay Now</button>
+                        <button
+                        onClick={()=>{
+                            createorder("premium")
+                        }}
+                         className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Pay Now</button>
                     </div>
                 </div>
             </div>
