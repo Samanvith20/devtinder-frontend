@@ -29,7 +29,10 @@ const Login = () => {
         navigate("/")
         
       if (!response.ok) {
+        toast.error(data.message || "Login Failed",{id:toastLoading})
+
         throw new Error(data.message || "Login failed");
+        
       }
       
 
